@@ -1,0 +1,8 @@
+FROM postgres:15-alpine
+
+ENV POSTGRES_USER=postgres
+ENV POSTGRES_PASSWORD=password
+ENV POSTGRES_DB=todos
+ENV DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:5432/${POSTGRES_DB}
+
+COPY init.sql /docker-entrypoint-initdb.d/

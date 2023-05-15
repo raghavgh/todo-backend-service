@@ -1,0 +1,31 @@
+version: '3'
+
+networks:
+  todo-app:
+
+services:
+  postgres:
+    image: postgres
+    restart: always
+    build:
+      context: ./postgres
+      dockerfile: Dockerfile-postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - todo-app
+
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: password
+      DB_NAME: todos
+    networks:
+      - todo-app
+    depends_on:
+      - postgres

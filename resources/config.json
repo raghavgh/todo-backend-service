@@ -1,0 +1,11 @@
+{
+  "DatabaseConfig": {
+    "url": "postgres://postgres:password@postgres:5432/todos?sslmode=disable",
+    "port": ""
+  },
+  "ServerConfig": {
+    "port": "8080",
+    "readTimeout": 1000,
+    "writeTimeout": 1000
+  }
+}
