@@ -45,7 +45,7 @@ func NewDbUserRepository(cfg *config.TodoConfig) *DBUserRepository {
 		log.Printf("Error opening database connection: %v", err)
 		return nil
 	}
-	err = pingWithRetry(db, 5, time.Millisecond*1500)
+	err = pingWithRetry(db, 5, time.Second*3)
 	if err != nil {
 		log.Printf("Error pinging database: %v", err)
 		return nil
