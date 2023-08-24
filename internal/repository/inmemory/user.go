@@ -4,23 +4,25 @@ import (
 	"context"
 	"fmt"
 	"sync"
-	"todoapp/cache"
+	"todoapp/config"
 
 	"todoapp/internal/models"
 	"todoapp/internal/repository/errors"
+
+	"github.com/raghavgh/gofast"
 )
 
 var mu sync.RWMutex
 
 type InMemoryUserRepository struct {
-	emailCache cache.Cache
-	idCache    cache.Cache
+	emailCache gofast.Cache
+	idCache    gofast.Cache
 }
 
 func NewInMemoryUserRepository() *InMemoryUserRepository {
 	return &InMemoryUserRepository{
-		emailCache: cache.NewCache(),
-		idCache:    cache.NewCache(),
+		emailCache: gofast.NewCache(config.Config.CacheConfig.Limit, 1),
+		idCache:    gofast.NewCache(config.Config.CacheConfig.Limit, 1),
 	}
 }
 

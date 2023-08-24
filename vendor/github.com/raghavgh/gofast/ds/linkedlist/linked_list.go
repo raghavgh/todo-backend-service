@@ -182,7 +182,5 @@ func (l *LinkedList) InsertBefore(before *Node, val any) {
 
 // Clear removes all nodes from the list.
 func (l *LinkedList) Clear() {
-	l.Head = nil
-	l.Tail = nil
-	l.len = 0
+	l.Head, l.Tail, l.len = nil, nil, 0
 }
