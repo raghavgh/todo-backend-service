@@ -7,5 +7,9 @@
     "port": "8080",
     "readTimeout": 1000,
     "writeTimeout": 1000
+  },
+  "CacheConfig": {
+    "limit": 1000,
+    "type": "lru"
   }
 }

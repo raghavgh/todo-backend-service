@@ -4,10 +4,8 @@ import (
 	"context"
 	"fmt"
 	"sync"
+	"todoapp/cache"
 
-	"github.com/google/uuid"
-
-	"todoapp/config"
 	"todoapp/internal/models"
 	"todoapp/internal/repository/errors"
 )
@@ -15,24 +13,23 @@ import (
 var mu sync.RWMutex
 
 type InMemoryUserRepository struct {
-	usersByID    map[uuid.UUID]*models.User
-	usersByEmail map[string]*models.User
+	emailCache cache.Cache
+	idCache    cache.Cache
 }
 
-func NewInMemoryUserRepository(cfg *config.TodoConfig) *InMemoryUserRepository {
+func NewInMemoryUserRepository() *InMemoryUserRepository {
 	return &InMemoryUserRepository{
-		usersByEmail: make(map[string]*models.User),
-		usersByID:    make(map[uuid.UUID]*models.User),
+		emailCache: cache.NewCache(),
+		idCache:    cache.NewCache(),
 	}
 }
 
 func (i *InMemoryUserRepository) GetUserByEmail(context context.Context, email string) (*models.User, error) {
-	mu.RLock()
-	defer mu.RUnlock()
-	if user, ok := i.usersByEmail[email]; ok {
-		return user, nil
+	val, ok := i.emailCache.Get(email)
+	if ok {
+		return val.(*models.User), nil
 	}
-	return nil, errors.RepoErrors{Message: fmt.Sprintf("user with email %s not ound", email)}
+	return nil, errors.RepoErrors{Message: fmt.Sprintf("user with email %s not found", email)}
 }
 
 func (i *InMemoryUserRepository) CreateUser(ctx context.Context, user *models.User) error {
@@ -42,17 +39,13 @@ func (i *InMemoryUserRepository) CreateUser(ctx context.Context, user *models.Us
 	if user == nil {
 		return errors.RepoErrors{Message: fmt.Sprint("user is nil")}
 	}
-	if _, ok := i.usersByEmail[user.Email]; ok {
+	if ok := i.emailCache.Contains(user.Email); ok {
 		return errors.RepoErrors{Message: fmt.Sprintf("user with email %s is already exist", user.Email)}
 	}
-	if len(i.usersByEmail) > 100 {
-		for key, _ := range i.usersByEmail {
-			delete(i.usersByEmail, key)
-			break
-		}
+	i.emailCache.Put(user.Email, user)
+	if ok := i.idCache.Contains(user.ID.String()); ok {
+		return errors.RepoErrors{Message: fmt.Sprintf("user with id %s is already exist", user.ID)}
 	}
-	i.usersByEmail[user.Email] = user
-	i.usersByID[user.ID] = user
-	fmt.Println(i.usersByID, i.usersByEmail)
+	i.idCache.Put(user.ID.String(), user)
 	return nil
 }

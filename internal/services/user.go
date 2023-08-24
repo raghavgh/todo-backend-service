@@ -3,34 +3,40 @@ package services
 import (
 	"context"
 	"fmt"
-	"github.com/google/uuid"
 	"todoapp/dto"
 	"todoapp/internal/models"
 	"todoapp/internal/repository"
 	"todoapp/internal/repository/db"
 	"todoapp/internal/repository/inmemory"
 	"todoapp/utils"
+
+	"github.com/google/uuid"
 )
 
 type UserService struct {
 	inMemoryRepo repository.UserRepositoryI
 	dbRepo       repository.UserRepositoryI
-	limit        int64
 }
 
-func NewUserService(inMemoryRepo *inmemory.InMemoryUserRepository, dbRepo *db.DBUserRepository) *UserService {
+func NewUserService() *UserService {
 	return &UserService{
-		inMemoryRepo: inMemoryRepo,
-		dbRepo:       dbRepo,
+		inMemoryRepo: inmemory.NewInMemoryUserRepository(),
+		dbRepo:       db.NewDbUserRepository(),
 	}
 }
 
 func (us *UserService) GetUserByEmail(context context.Context, email string) (user *models.User, err error) {
 	if user, err = us.inMemoryRepo.GetUserByEmail(context, email); err != nil {
 		user, err = us.dbRepo.GetUserByEmail(context, email)
-		us.inMemoryRepo.CreateUser(context, user)
+		if err != nil {
+			return nil, err
+		}
+		err = us.inMemoryRepo.CreateUser(context, user)
+		if err != nil {
+			return nil, err
+		}
 	}
-	return user, err
+	return user, nil
 }
 
 func (us *UserService) CreateUser(ctx context.Context, signupRequest *dto.SignupRequest, id uuid.UUID) error {
