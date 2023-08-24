@@ -4,36 +4,26 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/asaskevich/govalidator"
-	"github.com/google/uuid"
 	"log"
 	"net/http"
-	"todoapp/config"
 	"todoapp/dto"
 	"todoapp/internal/models"
-	"todoapp/internal/repository"
-	"todoapp/internal/repository/db"
-	"todoapp/internal/repository/inmemory"
 	"todoapp/internal/services"
+	"todoapp/internal/validators"
 	"todoapp/utils"
+
+	"github.com/asaskevich/govalidator"
+	"github.com/google/uuid"
 )
 
 type UserHandler struct {
-	cfg     *config.TodoConfig
 	service *services.UserService
 }
 
-func NewUserHandler(cfg *config.TodoConfig) *UserHandler {
-	inMemoryRepo := repository.GetRepo("inMemory", cfg).(*inmemory.InMemoryUserRepository)
-	dbRepo := repository.GetRepo("db", cfg).(*db.DBUserRepository)
+func NewUserHandler() *UserHandler {
 	return &UserHandler{
-		cfg:     cfg,
-		service: services.NewUserService(inMemoryRepo, dbRepo),
+		service: services.NewUserService(),
 	}
-}
-
-func enableCors(w *http.ResponseWriter) {
-	(*w).Header().Set("Access-Control-Allow-Origin", "*")
 }
 
 func (u *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
@@ -42,25 +32,20 @@ func (u *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 
 // Signup handles all signup requests and create users
 func (u *UserHandler) Signup(w http.ResponseWriter, r *http.Request) {
-	var signupRequest dto.SignupRequest
+	var signupRequest *dto.SignupRequest
 	// parsing request
-	err := json.NewDecoder(r.Body).Decode(&signupRequest)
+	err := json.NewDecoder(r.Body).Decode(signupRequest)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	valid, err := govalidator.ValidateStruct(signupRequest)
-	if err != nil {
-		log.Println(err.Error())
+	valid, err := validators.IsValidSignupRequest(signupRequest)
+	if !valid {
 		http.Error(w, "Validation error", http.StatusBadRequest)
 		return
 	}
-	if !valid {
-		http.Error(w, "Invalid request", http.StatusBadRequest)
-		return
-	}
 	id, _ := uuid.NewUUID()
-	err = u.service.CreateUser(r.Context(), &signupRequest, id)
+	err = u.service.CreateUser(r.Context(), signupRequest, id)
 	if err != nil {
 		w.Write([]byte(err.Error()))
 		w.WriteHeader(http.StatusInternalServerError)
@@ -78,21 +63,17 @@ func (u *UserHandler) Signup(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
-	var loginRequest dto.LoginRequest
-	err := json.NewDecoder(r.Body).Decode(&loginRequest)
+	var loginRequest *dto.LoginRequest
+	err := json.NewDecoder(r.Body).Decode(loginRequest)
 	if err != nil {
 		log.Printf("json error : %+v", err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	valid, err := govalidator.ValidateStruct(loginRequest)
-	if err != nil {
-		http.Error(w, "validation error", http.StatusBadRequest)
-		return
-	}
+	valid, err := validators.IsValidLoginRequest(loginRequest)
 	if !valid {
-		http.Error(w, "invalid request", http.StatusBadRequest)
+		http.Error(w, "Validation error", http.StatusBadRequest)
 		return
 	}
 	var user *models.User

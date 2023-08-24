@@ -1,14 +1,13 @@
 package repository
 
 import (
-	"todoapp/config"
 	"todoapp/internal/repository/db"
 	"todoapp/internal/repository/inmemory"
 )
 
-func GetRepo(repoType string, cfg *config.TodoConfig) UserRepositoryI {
+func GetRepo(repoType string) UserRepositoryI {
 	if repoType == "inMemory" {
-		return inmemory.NewInMemoryUserRepository(cfg)
+		return inmemory.NewInMemoryUserRepository()
 	}
-	return db.NewDbUserRepository(cfg)
+	return db.NewDbUserRepository()
 }

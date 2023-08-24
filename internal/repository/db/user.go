@@ -9,8 +9,8 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
-
 	"todoapp/config"
+
 	"todoapp/internal/models"
 	"todoapp/internal/repository/errors"
 )
@@ -37,8 +37,8 @@ func pingWithRetry(db *sql.DB, maxAttempts int, sleep time.Duration) error {
 	return fmt.Errorf("failed to ping the database after %d attempts", maxAttempts)
 }
 
-func NewDbUserRepository(cfg *config.TodoConfig) *DBUserRepository {
-	dbUrl := cfg.DatabaseConfig.Url
+func NewDbUserRepository() *DBUserRepository {
+	dbUrl := config.Config.DatabaseConfig.Url
 	db, err := sql.Open("postgres", dbUrl)
 	log.Println(dbUrl)
 	if err != nil {
