@@ -19,14 +19,8 @@ func New() *LinkedList {
 	return &LinkedList{}
 }
 
-// setFirstNode sets the first node of the list
-func (l *LinkedList) setFirstNode(node *Node) {
-	l.Head = node
-	l.Tail = node
-}
-
-// NewNode returns a new node with given value
-func NewNode(val any) *Node {
+// newNode returns a new node with given value
+func newNode(val any) *Node {
 	return &Node{Val: val}
 }
 
@@ -37,142 +31,152 @@ func (l *LinkedList) Len() int {
 
 // PushFront inserts a new node with given val at the front of the list
 func (l *LinkedList) PushFront(val any) {
-	node := NewNode(val)
+	node := newNode(val)
 	if l.len == 0 {
-		l.setFirstNode(node)
+		l.Head, l.Tail = node, node
 	} else {
-		node.Next = l.Head
-		l.Head.Prev = node
-		l.Head = node
+		node.Next, l.Head.Prev, l.Head = l.Head, node, node
 	}
 	l.len++
 }
 
 // PushBack inserts a new node with given val at the back of the list
 func (l *LinkedList) PushBack(val any) {
-	node := NewNode(val)
+	node := newNode(val)
 	if l.len == 0 {
-		l.setFirstNode(node)
+		l.Head, l.Tail = node, node
 	} else {
-		l.Tail.Next = node
-		node.Prev = l.Tail
-		l.Tail = node
+		l.Tail.Next, node.Prev, l.Tail = node, l.Tail, node
 	}
 	l.len++
 }
 
 // MoveToFront moves node to the front of the list
 func (l *LinkedList) MoveToFront(node *Node) {
-	if l.len == 0 {
+	if l.len == 0 || node == l.Head {
 		return
-	} else {
-		if node == l.Head {
-			return
-		} else if node == l.Tail {
-			node.Next = l.Head
-			l.Head.Prev = node
-			node.Prev.Next = nil
-			l.Tail = node.Prev
-			node.Prev = nil
-			l.Head = node
-		} else {
-			node.Prev.Next = node.Next
-			node.Next.Prev = node.Prev
-			node.Next = l.Head
-			l.Head.Prev = node
-			l.Head = node
-			node.Prev = nil
-		}
 	}
+
+	// If the node is at tail, update the tail to the previous node.
+	if node == l.Tail {
+		l.Tail = node.Prev
+	}
+
+	// unlink the node from its current position in the list.
+	if node.Prev != nil {
+		node.Prev.Next = node.Next
+	}
+	if node.Next != nil {
+		node.Next.Prev = node.Prev
+	}
+
+	// Set the node as new head.
+	node.Next, l.Head.Prev = l.Head, node
+	node.Prev, l.Head = nil, node
 }
 
-// MoveToBack moves node to the back of the list
+// MoveToBack moves node to the back of the list.
 func (l *LinkedList) MoveToBack(node *Node) {
-	if l.len == 0 {
+	// if the list is empty or the node is already at the tail, no need to move.
+	if l.len == 0 || node == l.Tail {
 		return
-	} else {
-		if node == l.Tail {
-			return
-		} else if node == l.Head {
-			node.Prev = l.Tail
-			l.Tail.Next = node
-			node.Next.Prev = nil
-			l.Head = node.Next
-			node.Next = nil
-			l.Tail = node
-		} else {
-			node.Prev.Next = node.Next
-			node.Next.Prev = node.Prev
-			l.Tail.Next = node
-			node.Prev = l.Tail
-			l.Tail = node
-			node.Next = nil
-		}
 	}
+
+	// If the node is at head, update the head to the next node.
+	if node == l.Head {
+		l.Head = node.Next
+	}
+
+	// unlink the node from its current position in the list.
+	if node.Prev != nil {
+		node.Prev.Next = node.Next
+	}
+	if node.Next != nil {
+		node.Next.Prev = node.Prev
+	}
+
+	// Set the node as new tail.
+	node.Prev, l.Tail.Next = l.Tail, node
+	node.Next, l.Tail = nil, node
 }
 
-// Remove removes node from list l.
+// Remove removes a node from the list
 func (l *LinkedList) Remove(node *Node) {
+	// If the list is empty, nothing to remove
 	if l.len == 0 {
 		return
-	} else {
-		node.Val = nil
-		if l.len == 1 {
-			l.Head = nil
-			l.Tail = nil
-		} else {
-			if l.Tail == node {
-				l.Tail = node.Prev
-				l.Tail.Next = nil
-			} else if l.Head == node {
-				l.Head = node.Next
-				l.Head.Prev = nil
-			} else {
-				node.Prev.Next = node.Next
-				node.Next.Prev = node.Prev
-			}
-		}
-		l.len--
 	}
+
+	// Unlink the node from the list
+	if node.Prev != nil {
+		node.Prev.Next = node.Next
+	} else {
+		// If the node to remove is at the head
+		l.Head = node.Next
+	}
+	if node.Next != nil {
+		node.Next.Prev = node.Prev
+	} else {
+		// If the node to remove is at the tail
+		l.Tail = node.Prev
+	}
+
+	// Clear the value and links on the removed node
+	node.Val, node.Prev, node.Next = nil, nil, nil
+
+	// Decrement the length of the list
+	l.len--
 }
 
-// InsertAfter inserts a new node with given val after the given node
+// InsertAfter adds a new node with the given value after a provided node
 func (l *LinkedList) InsertAfter(after *Node, val any) {
-	node := NewNode(val)
+	// Create new node
+	node := newNode(val)
+
+	// When list is empty, make new node the head and tail
 	if l.len == 0 {
-		l.setFirstNode(node)
+		l.Head, l.Tail = node, node
 	} else {
+		// Link node to its next and previous nodes
+		node.Prev, node.Next = after, after.Next
+
+		// If inserting after the tail, update tail
 		if after == l.Tail {
-			after.Next = node
-			node.Prev = after
 			l.Tail = node
 		} else {
-			node.Prev = after
-			node.Next = after.Next
-			after.Next = node
-			node.Next.Prev = node
+			// Else, update 'Prev' link on node's next node
+			after.Next.Prev = node
 		}
+		// Update 'Next' link on 'after' node
+		after.Next = node
 	}
+	// Increase length of list
 	l.len++
 }
 
-// InsertBefore inserts a new element with val node immediately before given node.
+// InsertBefore adds a new node with the given value before a provided node
 func (l *LinkedList) InsertBefore(before *Node, val any) {
-	node := NewNode(val)
+	// Create new node
+	node := newNode(val)
+
+	// When list is empty, make new node the head and tail
 	if l.len == 0 {
-		l.setFirstNode(node)
+		l.Head, l.Tail = node, node
 	} else {
+		// Link node to its next and previous nodes
+		node.Prev, node.Next = before.Prev, before
+
+		// If inserting before the head, update head
 		if before == l.Head {
-			before.Prev = node
-			node.Next = before
 			l.Head = node
 		} else {
-			node.Next = before
-			node.Prev = before.Prev
-			node.Prev.Next = node
-			before.Prev = node
+			// Else, update 'Next' link on node's previous node
+			before.Prev.Next = node
 		}
+		// Update 'Prev' link on 'before' node
+		before.Prev = node
 	}
+	// Increase length of list
 	l.len++
 }
 
