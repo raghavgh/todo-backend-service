@@ -3,11 +3,11 @@ package inmemory
 import (
 	"context"
 	"testing"
-	"todoapp/internal/models"
-	"todoapp/internal/repository/inmemory/mocks"
 
 	"github.com/golang/mock/gomock"
 	"github.com/google/uuid"
+	"github.com/todo-backend-service/internal/models"
+	"github.com/todo-backend-service/internal/repository/inmemory/mocks"
 )
 
 func TestInMemoryUserRepository_CreateUser(t *testing.T) {

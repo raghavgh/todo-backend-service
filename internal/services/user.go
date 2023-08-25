@@ -3,14 +3,14 @@ package services
 import (
 	"context"
 	"fmt"
-	"todoapp/dto"
-	"todoapp/internal/models"
-	"todoapp/internal/repository"
-	"todoapp/internal/repository/db"
-	"todoapp/internal/repository/inmemory"
-	"todoapp/utils"
 
 	"github.com/google/uuid"
+	"github.com/todo-backend-service/dto"
+	"github.com/todo-backend-service/internal/models"
+	"github.com/todo-backend-service/internal/repository"
+	"github.com/todo-backend-service/internal/repository/db"
+	"github.com/todo-backend-service/internal/repository/inmemory"
+	"github.com/todo-backend-service/utils"
 )
 
 type UserService struct {

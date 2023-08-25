@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"todoapp/internal/repository/db"
-	"todoapp/internal/repository/inmemory"
+	"github.com/todo-backend-service/internal/repository/db"
+	"github.com/todo-backend-service/internal/repository/inmemory"
 )
 
 func GetRepo(repoType string) UserRepositoryI {

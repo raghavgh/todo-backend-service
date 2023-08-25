@@ -12,11 +12,10 @@ COPY . $APP_HOME
 # Copy the config file
 COPY resources/config.json $APP_HOME/
 
-# Install dependencies
-RUN go mod download
+# Since we have vendored our dependencies, no need to run go mod download
 
-# Build the app
-RUN go build -o todo .
+# Build the app, ensure to use vendored dependencies
+RUN go build -mod=vendor -o todo .
 
 # Expose port 443 and start the app with HTTPS
 EXPOSE 8080

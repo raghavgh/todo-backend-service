@@ -10,11 +10,10 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
-
-	"todoapp/config"
-	"todoapp/constants"
-	"todoapp/internal/handlers"
-	"todoapp/utils"
+	"github.com/todo-backend-service/config"
+	"github.com/todo-backend-service/constants"
+	"github.com/todo-backend-service/internal/handlers"
+	"github.com/todo-backend-service/utils"
 )
 
 type Server http.Server

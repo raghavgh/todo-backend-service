@@ -6,14 +6,14 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"todoapp/dto"
-	"todoapp/internal/models"
-	"todoapp/internal/services"
-	"todoapp/internal/validators"
-	"todoapp/utils"
 
 	"github.com/asaskevich/govalidator"
 	"github.com/google/uuid"
+	"github.com/todo-backend-service/dto"
+	"github.com/todo-backend-service/internal/models"
+	"github.com/todo-backend-service/internal/services"
+	"github.com/todo-backend-service/internal/validators"
+	"github.com/todo-backend-service/utils"
 )
 
 type UserHandler struct {

@@ -2,8 +2,9 @@ package repository
 
 import (
 	"context"
+
 	_ "github.com/lib/pq"
-	"todoapp/internal/models"
+	"github.com/todo-backend-service/internal/models"
 )
 
 type UserRepositoryI interface {

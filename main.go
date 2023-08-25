@@ -1,9 +1,8 @@
 package main
 
 import (
-	"todoapp/internal/server"
-
 	valid "github.com/asaskevich/govalidator"
+	"github.com/todo-backend-service/internal/server"
 )
 
 func init() {
