@@ -31,7 +31,7 @@ func Start() {
 	router := BuildRouter()
 	s := NewServer(router)
 
-	log.Printf("Starting server at %s", s.Addr)
+	log.Printf("Starting new server at %s", s.Addr)
 	go func() {
 		if err := http.ListenAndServe(s.Addr, s.Handler); err != nil {
 			log.Fatalf("Failed to start server: %v", err)
