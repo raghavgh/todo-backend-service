@@ -1,4 +1,4 @@
-module todoapp
+module github.com/raghavgh/todo-backend-service
 
 go 1.18
 

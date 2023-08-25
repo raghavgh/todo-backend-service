@@ -6,9 +6,9 @@ import (
 	"sync"
 
 	"github.com/raghavgh/gofast"
-	"github.com/todo-backend-service/config"
-	"github.com/todo-backend-service/internal/models"
-	"github.com/todo-backend-service/internal/repository/errors"
+	"github.com/raghavgh/todo-backend-service/config"
+	"github.com/raghavgh/todo-backend-service/internal/models"
+	"github.com/raghavgh/todo-backend-service/internal/repository/errors"
 )
 
 var mu sync.RWMutex

@@ -4,7 +4,7 @@ import (
 	"context"
 
 	_ "github.com/lib/pq"
-	"github.com/todo-backend-service/internal/models"
+	"github.com/raghavgh/todo-backend-service/internal/models"
 )
 
 type UserRepositoryI interface {

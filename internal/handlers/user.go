@@ -9,11 +9,11 @@ import (
 
 	"github.com/asaskevich/govalidator"
 	"github.com/google/uuid"
-	"github.com/todo-backend-service/dto"
-	"github.com/todo-backend-service/internal/models"
-	"github.com/todo-backend-service/internal/services"
-	"github.com/todo-backend-service/internal/validators"
-	"github.com/todo-backend-service/utils"
+	"github.com/raghavgh/todo-backend-service/dto"
+	"github.com/raghavgh/todo-backend-service/internal/models"
+	"github.com/raghavgh/todo-backend-service/internal/services"
+	"github.com/raghavgh/todo-backend-service/internal/validators"
+	"github.com/raghavgh/todo-backend-service/utils"
 )
 
 type UserHandler struct {

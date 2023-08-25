@@ -1,6 +1,6 @@
 package dto
 
-import "github.com/todo-backend-service/internal/models"
+import "github.com/raghavgh/todo-backend-service/internal/models"
 
 type LoginRequest struct {
 	Email    string `json:"email" valid:"email,required"`

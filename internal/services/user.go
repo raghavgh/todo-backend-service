@@ -5,12 +5,12 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/todo-backend-service/dto"
-	"github.com/todo-backend-service/internal/models"
-	"github.com/todo-backend-service/internal/repository"
-	"github.com/todo-backend-service/internal/repository/db"
-	"github.com/todo-backend-service/internal/repository/inmemory"
-	"github.com/todo-backend-service/utils"
+	"github.com/raghavgh/todo-backend-service/dto"
+	"github.com/raghavgh/todo-backend-service/internal/models"
+	"github.com/raghavgh/todo-backend-service/internal/repository"
+	"github.com/raghavgh/todo-backend-service/internal/repository/db"
+	"github.com/raghavgh/todo-backend-service/internal/repository/inmemory"
+	"github.com/raghavgh/todo-backend-service/utils"
 )
 
 type UserService struct {

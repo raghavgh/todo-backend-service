@@ -2,7 +2,7 @@ package validators
 
 import (
 	valid "github.com/asaskevich/govalidator"
-	"github.com/todo-backend-service/dto"
+	"github.com/raghavgh/todo-backend-service/dto"
 )
 
 func init() {

@@ -2,7 +2,7 @@ package main
 
 import (
 	valid "github.com/asaskevich/govalidator"
-	"github.com/todo-backend-service/internal/server"
+	"github.com/raghavgh/todo-backend-service/internal/server"
 )
 
 func init() {

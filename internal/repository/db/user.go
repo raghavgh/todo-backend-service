@@ -10,9 +10,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/todo-backend-service/config"
-	"github.com/todo-backend-service/internal/models"
-	"github.com/todo-backend-service/internal/repository/errors"
+	"github.com/raghavgh/todo-backend-service/config"
+	"github.com/raghavgh/todo-backend-service/internal/models"
+	"github.com/raghavgh/todo-backend-service/internal/repository/errors"
 )
 
 type DBUserRepository struct {
