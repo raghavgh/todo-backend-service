@@ -28,8 +28,10 @@ func NewInMemoryUserRepository() *InMemoryUserRepository {
 func (i *InMemoryUserRepository) GetUserByEmail(context context.Context, email string) (*models.User, error) {
 	val, ok := i.emailCache.Get(email)
 	if ok {
+		fmt.Printf("Cache hit for email : %s", email)
 		return val.(*models.User), nil
 	}
+	fmt.Printf("Cache miss for email : %s", email)
 	return nil, errors.RepoErrors{Message: fmt.Sprintf("user with email %s not found", email)}
 }
 

@@ -32,7 +32,7 @@ func (u *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 
 // Signup handles all signup requests and create users
 func (u *UserHandler) Signup(w http.ResponseWriter, r *http.Request) {
-	var signupRequest *dto.SignupRequest
+	signupRequest := &dto.SignupRequest{}
 	// parsing request
 	err := json.NewDecoder(r.Body).Decode(signupRequest)
 	if err != nil {
@@ -63,7 +63,7 @@ func (u *UserHandler) Signup(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
-	var loginRequest *dto.LoginRequest
+	loginRequest := &dto.LoginRequest{}
 	err := json.NewDecoder(r.Body).Decode(loginRequest)
 	if err != nil {
 		log.Printf("json error : %+v", err.Error())
@@ -78,6 +78,7 @@ func (u *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 	var user *models.User
 	user, err = u.service.GetUserByEmail(context.Background(), loginRequest.Email)
+	log.Println(user)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("internal server error: %+v", err.Error()), http.StatusInternalServerError)
 		return
@@ -98,7 +99,7 @@ func (u *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u *UserHandler) Logout(w http.ResponseWriter, r *http.Request) {
-	var logoutRequest dto.LogoutRequest
+	logoutRequest := &dto.LogoutRequest{}
 	err := json.NewDecoder(r.Body).Decode(&logoutRequest)
 	if err != nil {
 		log.Printf("json error : %+v", err.Error())

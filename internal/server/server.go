@@ -56,6 +56,7 @@ func enableCors(next http.Handler) http.Handler {
 
 func BuildRouter() *mux.Router {
 	userHandler := handlers.NewUserHandler()
+	todoHandler := handlers.NewTodoHandler()
 	router := mux.NewRouter()
 
 	router.Use(enableCors) // Add CORS middleware
@@ -67,7 +68,9 @@ func BuildRouter() *mux.Router {
 		writer.WriteHeader(http.StatusOK)
 	}).Methods("GET")
 	router.HandleFunc(constants.LOGIN, userHandler.Login).Methods("POST")
+
 	protectedRouter.HandleFunc(constants.USER, userHandler.GetUser).Methods("POST")
+	protectedRouter.HandleFunc(constants.CREATE_TODO, todoHandler.Create).Methods("POST")
 
 	return router
 }

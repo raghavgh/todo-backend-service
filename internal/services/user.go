@@ -9,32 +9,23 @@ import (
 	"github.com/raghavgh/todo-backend-service/internal/models"
 	"github.com/raghavgh/todo-backend-service/internal/repository"
 	"github.com/raghavgh/todo-backend-service/internal/repository/db"
-	"github.com/raghavgh/todo-backend-service/internal/repository/inmemory"
 	"github.com/raghavgh/todo-backend-service/utils"
 )
 
 type UserService struct {
-	inMemoryRepo repository.UserRepositoryI
-	dbRepo       repository.UserRepositoryI
+	dbRepo repository.UserRepositoryI
 }
 
 func NewUserService() *UserService {
 	return &UserService{
-		inMemoryRepo: inmemory.NewInMemoryUserRepository(),
-		dbRepo:       db.NewDbUserRepository(),
+		dbRepo: db.NewDbUserRepository(),
 	}
 }
 
 func (us *UserService) GetUserByEmail(context context.Context, email string) (user *models.User, err error) {
-	if user, err = us.inMemoryRepo.GetUserByEmail(context, email); err != nil {
-		user, err = us.dbRepo.GetUserByEmail(context, email)
-		if err != nil {
-			return nil, err
-		}
-		err = us.inMemoryRepo.CreateUser(context, user)
-		if err != nil {
-			return nil, err
-		}
+	user, err = us.dbRepo.GetUserByEmail(context, email)
+	if err != nil {
+		return nil, err
 	}
 	return user, nil
 }
@@ -53,6 +44,5 @@ func (us *UserService) CreateUser(ctx context.Context, signupRequest *dto.Signup
 	if err != nil {
 		return err
 	}
-	us.inMemoryRepo.CreateUser(ctx, user)
 	return nil
 }

@@ -1,5 +1,11 @@
 package constants
 
-const SIGNUP = "/signup"
-const LOGIN = "/login"
-const USER = "/user"
+const (
+	SIGNUP      = "/signup"
+	LOGIN       = "/login"
+	USER        = "/user"
+	CREATE_TODO = "/todo"
+	GET_TODOS   = "/todos"
+	PUT_TODO    = "/todo/{todoId}"
+	DELETE_TODO = "/todo/{todoId}"
+)

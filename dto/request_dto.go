@@ -1,6 +1,9 @@
 package dto
 
-import "github.com/raghavgh/todo-backend-service/internal/models"
+import (
+	"github.com/raghavgh/todo-backend-service/internal/epoch"
+	"github.com/raghavgh/todo-backend-service/internal/models"
+)
 
 type LoginRequest struct {
 	Email    string `json:"email" valid:"email,required"`
@@ -28,4 +31,18 @@ type LoginResponse struct {
 
 type LogoutRequest struct {
 	Email string `json:"email" valid:"not_empty"`
+}
+
+type CreateTodoRequest struct {
+	JwtToken    string                `json:"jwtToken"`
+	ID          string                `json:"id"`
+	Heading     string                `json:"heading"`
+	Message     string                `json:"message"`
+	CreatedAt   epoch.EpochMillisTime `json:"createdAt"`
+	UpdatedAt   epoch.EpochMillisTime `json:"updatedAt"`
+	CompletedAt epoch.EpochMillisTime `json:"completedAt"`
+}
+
+type GetTodosRequest struct {
+	JwtToken string `json:"jwtToken"`
 }

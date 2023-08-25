@@ -2,12 +2,14 @@ package utils
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"net/http"
+	"time"
+
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
-	"net/http"
-	"time"
 )
 
 func GetHashPassword(password string) string {
@@ -69,4 +71,28 @@ func GetJWTToken(userID uuid.UUID, username, email string) (string, error) {
 
 func VerifyPassword(requestPassword, serverPassword string) bool {
 	return bcrypt.CompareHashAndPassword([]byte(serverPassword), []byte(requestPassword)) == nil
+}
+
+func GetUserIDFromJWT(tokenStr string) (string, error) {
+	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte("secret"), nil
+	})
+
+	if err != nil {
+		return "", err
+	}
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		userID, ok := claims["sub"].(string)
+		if !ok {
+			return "", errors.New("unable to parse user ID in JWT")
+		}
+
+		return userID, nil
+	} else {
+		return "", errors.New("token is not valid or claims cannot be read")
+	}
 }
